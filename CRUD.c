@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef struct {
     int id;
@@ -10,18 +11,18 @@ typedef struct {
 
 // Function to create a new user file if it doesn't exist
 void createFile() {
-    FILE *fp = fopen("users.txt", "w");
-    if (fp == NULL) {
+    FILE *filePtr = fopen("users.txt", "w");
+    if (filePtr == NULL) {
         printf("Error creating file!\n");
         exit(1);
     }
-    fclose(fp);
+    fclose(filePtr);
 }
 
 // Function to add a new user to the file
 void addUser() {
-    FILE *fp = fopen("users.txt", "a");
-    if (fp == NULL) {
+    FILE *filePtr = fopen("users.txt", "a");
+    if (filePtr == NULL) {
         printf("Error opening file!\n");
         exit(1);
     }
@@ -34,110 +35,132 @@ void addUser() {
     printf("Enter User Age: ");
     scanf("%d", &user.age);
 
-    fprintf(fp, "%d %s %d\n", user.id, user.name, user.age);
-    fclose(fp);
+    fprintf(filePtr, "%d %s %d\n", user.id, user.name, user.age);
+    fclose(filePtr);
     printf("User added successfully!\n");
 }
 
 // Function to read and display all users
 void displayUsers() {
-    FILE *fp = fopen("users.txt", "r");
-    if (fp == NULL) {
+    FILE *filePtr = fopen("users.txt", "r");
+    if (filePtr == NULL) {
         printf("Error opening file!\n");
-        exit(1);
+        return;
     }
 
     User user;
-    printf("ID\tName\tAge\n");
-    while (fscanf(fp, "%d %s %d", &user.id, user.name, &user.age) != EOF) {
+    int foundUser = 0;
+    printf("\n--- User List ---\n");
+
+    printf("\nID\tName\tAge\n");
+    printf("---------------------\n");
+    while (fscanf(filePtr, "%d %s %d", &user.id, user.name, &user.age) == 3) {
         printf("%d\t%s\t%d\n", user.id, user.name, user.age);
     }
-    fclose(fp);
+    if(!foundUser){
+        printf("No user found  \n");
+    }
+    fclose(filePtr);
 }
 
 // Function to update a user's details
 void updateUser() {
-    FILE *fp = fopen("users.txt", "r+");
-    if (fp == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
+    FILE *filePtr = fopen("users.txt", "r");
+    FILE *tempf = fopen("temp.txt", "w");
+    if (filePtr == NULL || tempf == NULL) {
+        printf("Error opening file.\n");
+        return;
     }
-
-    int id;
-    printf("Enter User ID to update: ");
-    scanf("%d", &id);
 
     User user;
-    int found = 0;
-    while (fscanf(fp, "%d %s %d", &user.id, user.name, &user.age) != EOF) {
-        if (user.id == id) {
+    int Id, found = 0;
+    printf("Enter User ID to update: ");
+    scanf("%d", &Id);
+
+    while (fscanf(filePtr, "%d %s %d", &user.id, user.name, &user.age) == 3) {
+        if (user.id == Id) {
             found = 1;
-            printf("Enter new name: ");
+            printf("Enter updated User ID: ");
+            scanf("%d", &user.id);
+            printf("Enter updated Name: ");
             scanf("%s", user.name);
-            printf("Enter new age: ");
+            printf("Enter updated Age: ");
             scanf("%d", &user.age);
-            fseek(fp, -sizeof(user), SEEK_CUR);
-            fprintf(fp, "%d %s %d\n", user.id, user.name, user.age);
-            break;
         }
+        fprintf(tempf, "%d %s %d\n", user.id, user.name, user.age);
     }
 
-    if (!found) {
-        printf("User not found!\n");
-    }
+    fclose(filePtr);
+    fclose(tempf);
 
-    fclose(fp);
+    if (found) {
+        remove("users.txt");
+        rename("temp.txt", "users.txt");
+        printf("User updated successfully!\n");
+    } else {
+        printf("User not found.\n");
+        remove("temp.txt");
+    }
 }
 
 // Function to delete a user
 void deleteUser() {
-    FILE *fp = fopen("users.txt", "r");
-    if (fp == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
+    FILE *filePtr = fopen("users.txt", "r");
+    FILE *tempf = fopen("temp.txt", "w");
+    if (filePtr == NULL || tempf == NULL) {
+        printf("Error opening file.\n");
+        return;
     }
 
-    FILE *temp = fopen("temp.txt", "w");
-    if (temp == NULL) {
-        printf("Error creating temporary file!\n");
-        exit(1);
-    }
-
-    int id;
+    User user;
+    int id, found = 0;
     printf("Enter User ID to delete: ");
     scanf("%d", &id);
 
-    User user;
-    int found = 0;
-    while (fscanf(fp, "%d %s %d", &user.id, user.name, &user.age) != EOF) {
+    while (fscanf(filePtr, "%d %s %d", &user.id, user.name, &user.age) == 3) {
         if (user.id != id) {
-            fprintf(temp, "%d %s %d\n", user.id, user.name, user.age);
+            fprintf(tempf, "%d %s %d\n", user.id, user.name, user.age);
         } else {
             found = 1;
         }
     }
 
-    fclose(fp);
-    fclose(temp);
+    fclose(filePtr);
+    fclose(tempf);
 
-    remove("users.txt");
-    rename("temp.txt", "users.txt");
-
-    if (!found) {
-        printf("User not found!\n");
-    } else {
+    if (found) {
+        remove("users.txt");
+        rename("temp.txt", "users.txt");
         printf("User deleted successfully!\n");
+    } else {
+        printf("User not found.\n");
+        remove("temp.txt");
     }
 }
 
+// To get a valid choice, no invalid input
+int getValidChoice() {
+    int choice;
+    char buffer[5];
+    while (1) {
+        printf("Enter your choice: ");
+        if (fgets(buffer, sizeof(buffer), stdin)) {
+            if (sscanf(buffer, "%d", &choice) == 1 && choice >= 1 && choice <= 5) {
+                return choice;
+            } else {
+                printf("Please enter a valid choice (1-5).\n");
+            }
+        }
+    }
+}
+//main function
 int main() {
     int choice;
     createFile();
 
     do {
         printf("\n1. Add User\n2. Display Users\n3. Update User\n4. Delete User\n5. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
+        choice = getValidChoice();
 
         switch (choice) {
             case 1:
@@ -156,7 +179,7 @@ int main() {
                 printf("Exiting...\n");
                 break;
             default:
-                printf("Invalid choice!\n");
+                printf("Invalid choice! Try again.\n");
         }
     } while (choice != 5);
 
