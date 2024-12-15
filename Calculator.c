@@ -2,76 +2,148 @@
 #include <string.h>
 #include <ctype.h>
 
-// Evaluate the mathematical expression and returns the result.
-int evaluate(char *expr) {
-    int i; //index
-    int expLen = strlen(expr); //length of the expression
-    int currNum;
-    int op = 0;
-    int numSign = 1; //it basically tells us whether the number is +ve(1) or-ve(0)
-    char currOp = '+';
+// Function to perform the arithmetic operation
+int performOperation(int a, int b, char op) {
+    if (op == '+') return a + b;
+    if (op == '-') return a - b;
+    if (op == '*') return a * b;
+    if (op == '/') {
+        if (b == 0) {
+            printf("Error: Division by zero.\n");
+            return 0; // Return 0 on division by zero
+        }
+        return a / b;
+    }
+    return 0;
+}
 
-    // Iterate through each character of the expression.
-    for (i = 0; i < expLen; i++) {
-        // If the current character is a digit, parse the number.
-        if (isdigit(expr[i])) {
+// Function to evaluate mathematical expression
+int evaluate(char *expr) {
+    int numbers[100], numstk = -1;
+    char operators[100], opstk = -1;
+    int currNum = 0;
+    int i = 0, expLen = strlen(expr);
+
+    // Process each character in the expression
+    while (i < expLen) {
+        char ch = expr[i];
+
+        if (isspace(ch)) {
+            // Ignore whitespace
+            i++;
+            continue;
+        }
+
+        if (isdigit(ch)) {
+            
             currNum = 0;
             while (i < expLen && isdigit(expr[i])) {
                 currNum = currNum * 10 + (expr[i] - '0');
                 i++;
             }
-            i--;
+            numbers[++numstk] = currNum; // Push the number in the stack
+            continue;
+        }
 
-            // Perform the appropriate arithmetic operation based on the current operator.
-            switch (currOp) {
-                case '+':
-                    op += numSign * currNum;
-                    break;
-                case '-':
-                    op -= numSign * currNum;
-                    break;
-                case '*':
-                    op *= numSign * currNum;
-                    break;
-                case '/':
-                    if (currNum == 0) {
-                        printf("Error: Division by zero.\n");
-                        return 0;
-                    }
-                    op += (int)(numSign * op / currNum);
-                    break;
+        if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            // Process operators based on precedence
+            while (opstk >= 0 && (
+                (ch == '+' || ch == '-') || 
+                (operators[opstk] == '*' || operators[opstk] == '/'))) {
+                int b = numbers[numstk--];
+                int a = numbers[numstk--];
+                char op = operators[opstk--];
+                numbers[++numstk] = performOperation(a, b, op);
             }
+            operators[++opstk] = ch; // Push the current operator
+        } else {
+            printf("Error: Invalid character '%c' in expression.\n", ch);
+            return 0;
         }
-        // Handle positive or negative numbers.
-        else if (expr[i] == '+' || expr[i] == '-') {
-            numSign = (expr[i] == '-') ? -1 : 1;
+
+        i++;
+    }
+
+    // Process any remaining operators
+    while (opstk >= 0) {
+        int b = numbers[numstk--];
+        int a = numbers[numstk--];
+        char op = operators[opstk--];
+        numbers[++numstk] = performOperation(a, b, op);
+    }
+
+    return numbers[numstk];
+}
+
+// Function to remove whitespace from the expression
+void S(char *expr) {
+    int i = 0, j = 0;
+    while (expr[i] != '\0') {
+        if (!isspace(expr[i])) {
+            expr[j++] = expr[i];
         }
-        // Update the current operator for multiplication or division.
-        else if (expr[i] == '*' || expr[i] == '/') {
-            currOp = expr[i];
-        }
-        // Handle invalid characters.
-        else if (!isspace(expr[i])) {
-            printf("Error: Invalid expression.\n");
+        i++;
+    }
+    expr[j] = '\0';
+}
+
+// Function to validate the expression
+int isValidExpression(char *expr) {
+    int len = strlen(expr);
+    int prevWasOperator = 1; // Start with 1 to disallow starting with an operator
+
+    for (int i = 0; i < len; i++) {
+        char ch = expr[i];
+
+        if (isspace(ch)) continue;
+
+        if (isdigit(ch)) {
+            prevWasOperator = 0; // Mark as valid operand
+        } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            if (prevWasOperator) {
+                printf("Error: Consecutive operators or invalid start.\n");
+                return 0;
+            }
+            prevWasOperator = 1; // Mark as operator
+        } else {
+            printf("Error: Invalid character '%c' in expression.\n", ch);
             return 0;
         }
     }
 
-    return op;
+    if (prevWasOperator) {
+        printf("Error: Expression cannot end with an operator.\n");
+        return 0;
+    }
+
+    return 1;
 }
 
 int main() {
     char expr[100];
 
-    // Prompt the user to enter a mathematical expression.
+    // Enter a mathematical expression
     printf("Enter a mathematical expression: ");
     fgets(expr, sizeof(expr), stdin);
 
-    // Evaluate the expression and print the result or an error message.
-    int result = evaluate(expr);
-    if (result != 0) {
-        printf("Result: %d\n", result);
+    expr[strcspn(expr, "\n")] = '\0';
+
+    // Remove whitespaces
+    rmvWhiteSpace(expr);
+
+    if (strlen(expr) == 0) {
+        printf("Error: Input cannot be empty.\n");
+        return 0;
     }
+
+    // check if the expression is right or not
+    if (!isValidExpression(expr)) {
+        printf("Invalid expression.\n");
+        return 0;
+    }
+
+    int result = evaluate(expr);
+    printf("Result: %d\n", result);
 
     return 0;
 }
