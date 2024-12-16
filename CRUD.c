@@ -141,11 +141,11 @@ void deleteUser() {
 // To get a valid choice, no invalid input
 int getValidChoice() {
     int choice;
-    char buffer[5];
+    char input[5];
     while (1) {
         printf("Enter your choice: ");
-        if (fgets(buffer, sizeof(buffer), stdin)) {
-            if (sscanf(buffer, "%d", &choice) == 1 && choice >= 1 && choice <= 5) {
+        if (fgets(input, sizeof(input), stdin)) {
+            if (sscanf(input, "%d", &choice) == 1 && choice >= 1 && choice <= 5) {
                 return choice;
             } else {
                 printf("Please enter a valid choice (1-5).\n");
