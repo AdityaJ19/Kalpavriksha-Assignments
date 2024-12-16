@@ -9,7 +9,7 @@ int performOperation(int a, int b, char op) {
     if (op == '*') return a * b;
     if (op == '/') {
         if (b == 0) {
-            printf("Error: Division by zero.\n");
+            printf("Division by zero.\n");
             return 0; // Return 0 on division by zero
         }
         return a / b;
@@ -57,7 +57,7 @@ int evaluate(char *expr) {
             }
             operators[++opstk] = ch; // Push the current operator
         } else {
-            printf("Error: Invalid character '%c' in expression.\n", ch);
+            printf("Invalid character '%c' in expression.\n", ch);
             return 0;
         }
 
@@ -101,18 +101,18 @@ int isValidExpression(char *expr) {
             prevWasOperator = 0; // Mark as valid operand
         } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
             if (prevWasOperator) {
-                printf("Error: Consecutive operators or invalid start.\n");
+                printf("Consecutive operators or invalid start.\n");
                 return 0;
             }
             prevWasOperator = 1; // Mark as operator
         } else {
-            printf("Error: Invalid character '%c' in expression.\n", ch);
+            printf("Invalid character '%c' in expression.\n", ch);
             return 0;
         }
     }
 
     if (prevWasOperator) {
-        printf("Error: Expression cannot end with an operator.\n");
+        printf("Expression cannot end with an operator.\n");
         return 0;
     }
 
@@ -132,7 +132,7 @@ int main() {
     rmvWhiteSpace(expr);
 
     if (strlen(expr) == 0) {
-        printf("Error: Input cannot be empty.\n");
+        printf("Input cannot be empty.\n");
         return 0;
     }
 
