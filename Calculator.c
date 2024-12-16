@@ -76,7 +76,7 @@ int evaluate(char *expr) {
 }
 
 // Function to remove whitespace from the expression
-void S(char *expr) {
+void rmvWhiteSpace(char *expr) {
     int i = 0, j = 0;
     while (expr[i] != '\0') {
         if (!isspace(expr[i])) {
