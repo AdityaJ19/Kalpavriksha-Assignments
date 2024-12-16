@@ -5,7 +5,7 @@
 
 typedef struct {
     int id;
-    char name[50];
+    char *name;
     int age;
 } User;
 
@@ -19,6 +19,16 @@ void createFile() {
     fclose(filePtr);
 }
 
+
+int isValidName(const char *name) {
+    for (int i = 0; name[i] != '\0'; i++) {
+        if (!isalpha(name[i]) && name[i] != ' ') {
+            return 0; // Invalid name
+        }
+    }
+    return 1; // Valid name
+}
+
 // Function to add a new user to the file
 void addUser() {
     FILE *filePtr = fopen("users.txt", "a");
@@ -28,15 +38,29 @@ void addUser() {
     }
 
     User user;
+    char nameInput[100];
+
     printf("Enter User ID: ");
     scanf("%d", &user.id);
-    printf("Enter User Name: ");
-    scanf("%s", user.name);
+
+    while (1) {
+        printf("Enter User Name: ");
+        scanf("%s", nameInput);
+        if (isValidName(nameInput)) {
+            user.name = malloc(strlen(nameInput) + 1);
+            strcpy(user.name, nameInput);
+            break;
+        } else {
+            printf("Invalid name. Please enter alphabetic characters only.\n");
+        }
+    }
+
     printf("Enter User Age: ");
     scanf("%d", &user.age);
 
     fprintf(filePtr, "%d %s %d\n", user.id, user.name, user.age);
     fclose(filePtr);
+    free(user.name);
     printf("User added successfully!\n");
 }
 
@@ -49,16 +73,11 @@ void displayUsers() {
     }
 
     User user;
-    int foundUser = 0;
-    printf("\n--- User List ---\n");
-
+    char nameInput[100];
     printf("\nID\tName\tAge\n");
     printf("---------------------\n");
-    while (fscanf(filePtr, "%d %s %d", &user.id, user.name, &user.age) == 3) {
-        printf("%d\t%s\t%d\n", user.id, user.name, user.age);
-    }
-    if(!foundUser){
-        printf("No user found  \n");
+    while (fscanf(filePtr, "%d %s %d", &user.id, nameInput, &user.age) == 3) {
+        printf("%d\t%s\t%d\n", user.id, nameInput, user.age);
     }
     fclose(filePtr);
 }
@@ -73,21 +92,33 @@ void updateUser() {
     }
 
     User user;
+    char nameInput[100];
     int Id, found = 0;
     printf("Enter User ID to update: ");
     scanf("%d", &Id);
 
-    while (fscanf(filePtr, "%d %s %d", &user.id, user.name, &user.age) == 3) {
+    while (fscanf(filePtr, "%d %s %d", &user.id, nameInput, &user.age) == 3) {
         if (user.id == Id) {
             found = 1;
             printf("Enter updated User ID: ");
             scanf("%d", &user.id);
-            printf("Enter updated Name: ");
-            scanf("%s", user.name);
+
+            while (1) {
+                printf("Enter updated Name: ");
+                scanf("%s", nameInput);
+                if (isValidName(nameInput)) {
+                    user.name = malloc(strlen(nameInput) + 1);
+                    strcpy(user.name, nameInput);
+                    break;
+                } else {
+                    printf("Invalid name. Please enter alphabetic characters only.\n");
+                }
+            }
+
             printf("Enter updated Age: ");
             scanf("%d", &user.age);
         }
-        fprintf(tempf, "%d %s %d\n", user.id, user.name, user.age);
+        fprintf(tempf, "%d %s %d\n", user.id, nameInput, user.age);
     }
 
     fclose(filePtr);
@@ -113,13 +144,14 @@ void deleteUser() {
     }
 
     User user;
+    char nameInput[100];
     int id, found = 0;
     printf("Enter User ID to delete: ");
     scanf("%d", &id);
 
-    while (fscanf(filePtr, "%d %s %d", &user.id, user.name, &user.age) == 3) {
+    while (fscanf(filePtr, "%d %s %d", &user.id, nameInput, &user.age) == 3) {
         if (user.id != id) {
-            fprintf(tempf, "%d %s %d\n", user.id, user.name, user.age);
+            fprintf(tempf, "%d %s %d\n", user.id, nameInput, user.age);
         } else {
             found = 1;
         }
@@ -141,7 +173,7 @@ void deleteUser() {
 // To get a valid choice, no invalid input
 int getValidChoice() {
     int choice;
-    char input[5];
+    char input[10];
     while (1) {
         printf("Enter your choice: ");
         if (fgets(input, sizeof(input), stdin)) {
@@ -153,7 +185,8 @@ int getValidChoice() {
         }
     }
 }
-//main function
+
+// Main function
 int main() {
     int choice;
     createFile();
