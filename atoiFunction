@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+
+int string_Len(char* str){
+    int len = 0;
+    while(str[len] != '\0'){
+        len++;
+    }
+    return len;
+}
+
+int main()
+{
+    char str[100];
+    printf("Enter the string: ");
+    scanf("%s", str);
+    int sum =0;
+    int sign = 1;
+    int i = 0;
+    
+    while(isspace(str[i])) i++;
+    
+    if(str[0] == '-'){
+        sign = -1;
+        i = 1;
+    }
+    
+    for(int i =0; i< string_Len(str); i++){
+        if(isdigit(str[i])){
+            sum = (sum*10) + (str[i] - '0');
+        }else if(!isspace(str[i])){
+            sum = 0;
+        }
+    }
+    sum *= sign;
+    printf("The integer value is: %d", sum);
+    return 0;
+}
