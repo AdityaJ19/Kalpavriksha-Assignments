@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int str_len(char* str){
+    int len = 0;
+    while(str[len] != '\0'){
+        len++;
+    }
+    return len;
+}
+
+char* removeOccurance(char* string, char target){
+
+    int len = str_len(string);
+    char* output = (char*)malloc((len +1)*sizeof(char));
+    int k = 0;
+
+    for(int i = 0; i< len; i++){
+        if(string[i] == target){
+            continue;
+        }else{
+            output[k] = string[i];
+            k++;
+        }
+    } 
+    output[k] = '\0';
+    return output;
+}
+
+int main(){
+
+    char string[100];
+    printf("Enter the string: ");
+    fgets(string, sizeof(string), stdin);
+
+    char target;
+    printf("Enter the target: ");
+    target = getchar();
+
+    char* output = removeOccurance(string, target);
+    printf("The output string after removing of the target is: %s\n", output);
+
+    free(output);
+    return 0;
+}
