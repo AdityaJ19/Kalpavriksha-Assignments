@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<string.h>
+
+int str_len(char* str){
+    int len = 0;
+    while(str[len] != '\0'){
+        len++;
+    }
+    return len;
+}
+
+char* str_cpy(char* destination, char* source){
+    while(*destination++ = *source++);
+    return destination - 1;
+}
+
+void longestPallin(char* string, char* output){
+    int len = str_len(string);
+    if(len == 0){
+        return;
+    }
+
+    int start = 0;
+    int maxLen = 1;
+
+    for(int i = 0; i < len; i++){
+        for(int j = 0; j<=1; j++){
+            int low = i;
+            int high = i+j;
+
+            while(low>=0 && high < len && string[low] == string[high]){
+                int currLen = high-low+1;
+                if(currLen > maxLen){
+                    start = low;
+                    maxLen = currLen;
+                }
+                low--;
+                high++;
+            }
+        }
+    }
+    strncpy(output, string+start, maxLen);
+    output[maxLen] = '\0';
+}
+
+int main(){
+    char string[100];
+    printf("Enter the string:");
+    fgets(string, sizeof(string), stdin);
+
+    char output[100];
+    longestPallin(string, output);
+    printf("The longest pallindromic substring is: %s", output);
+    return 0;
+}
