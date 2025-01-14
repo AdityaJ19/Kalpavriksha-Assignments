@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <string.h>
+
+int isSpace(char ch) {
+    return (ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r' || ch == '\v' || ch == '\f');
+}
+
+int main() {
+    char str[100];
+    printf("Enter the string: ");
+    fgets(str, sizeof(str), stdin);
+    
+    int count = 0;
+    int i = 0;
+    int inWord = 0;
+    
+    while (str[i] != '\n' && str[i] != '\0') {
+        if (isSpace(str[i])) {
+            inWord = 0;
+        } else if (!inWord) {
+            inWord = 1;
+            count++;
+        }
+        i++;
+    }
+    
+    printf("The number of words are: %d\n", count);
+    return 0;
+}
