@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char input[100];
+    fgets(input, sizeof(input), stdin);
+    int inputIndex = 0;
+    int outputIndex = 0;
+    char output[100];
+
+    while (input[inputIndex] != '\0') {
+        int count = 1;
+        char ch = input[inputIndex];
+        output[outputIndex] = input[inputIndex];
+        outputIndex++;
+
+        while (input[inputIndex] == input[inputIndex + 1]) {
+            count++;
+            inputIndex++;
+        }
+
+        output[outputIndex] = count + '0';
+        outputIndex++;
+        inputIndex++;
+    }
+
+    if (strlen(input) < strlen(output)) {
+        printf("%s", input);
+    } else {
+        printf("%s", output);
+    }
+
+    return 0;
+}
