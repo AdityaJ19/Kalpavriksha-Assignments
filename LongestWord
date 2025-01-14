@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+char* str_cpy(char* destination, char* source){
+    while(*destination++ = *source++);
+    return destination - 1;
+}
+
+char* str_chr(char* str, int c){
+    while(*str != '\0'){
+        if(*str == (char)c){
+            return (char*)str;
+        }
+        str++;
+    }
+    if(c == '\0'){
+        return (char*)str;
+    }
+    return NULL;
+}
+
+int str_len(char* str){
+    int len = 0;
+    while(str[len] != '\0'){
+        len++;
+    }
+    return len;
+}
+
+char *longest_word(char* sentence){
+    int length = str_len(sentence);
+    int max = -1;
+    int count = 0;
+    
+    char max_Word[256];
+    char tempBuffer[256];
+    char nonWords[100] = " .,;\n\t";
+    
+    int i = 0;
+    
+    while(i < length){
+        count = 0;
+        while(i < length){
+            if(str_chr(nonWords, sentence[i]) != NULL)
+            break;
+            
+            tempBuffer[count] = sentence[i];
+            i++;
+            count++;
+        }
+        tempBuffer[count] = '\0';
+        if(count> max){
+            max = count;
+            str_cpy(max_Word, tempBuffer);
+        }
+        while(i < length){
+            if(str_chr(nonWords, sentence[i]) == NULL)
+            break;
+            i++;
+        }
+    }
+    char* word = malloc(sizeof(char*) * (max+1));
+    str_cpy(word, max_Word);
+    return word;
+}
+
+
+int main()
+{
+    char sentence[100];
+    printf("Enter the sentence: ");
+    fgets(sentence,sizeof(sentence), stdin);
+    
+    char *word = longest_word(sentence);
+    printf("%s\n", word);
+    free(word);
+
+    return 0;
+}
