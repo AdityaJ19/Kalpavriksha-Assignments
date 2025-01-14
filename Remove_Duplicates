@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+
+int string_Len(char* str){
+    int len = 0;
+    while(str[len] != '\0'){
+        len++;
+    }
+    return len;
+}
+
+int main()
+{
+    char str[100];
+    int i,j,k;
+    printf("Enter you String: ");
+    scanf("%s", str);
+    
+    for(i = 0; i < string_Len(str); i++){
+        for(j = i+1; j<string_Len(str);){
+            if(str[j] == str[i]){
+                for(k = j; k<string_Len(str); k++){
+                    str[k] = str[k+1];
+                }
+            }else{
+                j++;
+            }
+        }
+    }
+    printf("The new String is: %s", str);
+    return 0;
+}
