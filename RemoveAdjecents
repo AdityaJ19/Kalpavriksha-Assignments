@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+int str_len(char* str) {
+    int len = 0;
+    while (str[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+void trimSpaces(char string[]) {
+    int i = 0, j = 0;
+    while (string[i] == ' ') {
+        i++;
+    }
+
+    while (string[i] != '\0') {
+        string[j++] = string[i++];
+    }
+
+    string[j] = '\0';
+}
+
+void printString(char string[]) {
+    printf("Current string: %s\n", string);
+}
+
+int removeDuplicates(char string[], int length) {
+    int index = 0;
+    while (string[index] != '\n' && string[index] != '\0') {
+        if (string[index] == ' ') {
+            index++;
+        } else if (string[index] == string[index + 1]) {
+            for (int j = index + 2; j < length; j++) {
+                string[index] = string[j];
+                index++;
+            }
+            string[length - 2] = '\0';
+            printString(string);
+            removeDuplicates(string, length - 2);
+            return 1;
+        } else {
+            index++;
+        }
+    }
+    return 1;
+}
+
+int main() {
+    char string[100];
+    
+    fgets(string, 100, stdin);
+    
+    int length = str_len(string);
+    
+    trimSpaces(string);
+    printString(string);
+    
+    int result = removeDuplicates(string, length);
+    
+    printf("String after removing duplicates: %s\n", string);
+    
+    return 0;
+}
