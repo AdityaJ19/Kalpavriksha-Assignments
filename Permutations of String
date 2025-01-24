@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+void swapFun(char *str1, char *str2) {
+    char temp = *str1;
+    *str1 = *str2;
+    *str2 = temp;
+}
+
+void printArr(char *arr, int n) {
+    printf("\"");
+    for (int i = 0; i < n; i++) {
+        printf("%c", arr[i]);
+    }
+    printf("\"");
+}
+
+void printAllPermutations(char *arr, int n, int size, int *first) {
+    if (size == 1) {
+        if (*first) {
+            printArr(arr, n);
+            *first = 0;
+        } else {
+            printf(", ");
+            printArr(arr, n);
+        }
+        return;
+    }
+    for (int i = 0; i < size; i++) {
+        printAllPermutations(arr, n, size - 1, first);
+
+        if (size % 2 == 1) {
+            swapFun(&arr[0], &arr[size - 1]);
+        } else {
+            swapFun(&arr[i], &arr[size - 1]);
+        }
+    }
+}
+
+int length(char *arr) {
+    int len = 0;
+    while (arr[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+int main() {
+    char input[100];
+    scanf("%s", input);
+    int len = length(input);
+    printf("[");
+    int first = 1;
+    printAllPermutations(input, len, len, &first);
+    printf("]\n");
+
+    return 0;
+}
