@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}Node;
+
+Node* head = NULL;
+
+// void selectionSort(Node* head){
+//     Node* curr = head;
+//     Node* front;
+//     int temp;
+    
+//     while(curr != NULL){
+//         for(front = curr->next; front; front = front->next){
+//             if(curr->data >= front->data){
+//                 temp = curr->data;
+//                 curr->data = front->data;
+//                 front->data = temp;
+//             }
+//         }
+//         curr = curr->next;
+//     }
+// }
+
+void selectionSort(Node* head){
+    if(head == NULL || head->next == NULL)
+        return;
+    
+    Node* curr = head;
+    
+    while(curr != NULL){
+        Node* minVal = curr;
+        Node* temp = curr->next;
+    while(temp != NULL){
+    if(temp->data < minVal->data){
+        minVal = temp;
+    }
+    temp = temp->next;
+    }
+    
+    if(minVal != curr){
+        int tempData = curr->data;
+        curr->data = minVal->data;
+        minVal->data = tempData;
+    }
+    curr = curr->next;
+    }
+}
+
+void LLtraverse(Node* head){
+    Node* temp = head;
+    
+    while(temp!= NULL){
+        printf("%d->", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+void LLAddNode(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+    Node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+int main()
+{
+   int n, value;
+   scanf("%d", &n);
+   for(int i = 0; i<n; i++){
+       scanf("%d", &value);
+       LLAddNode(value);
+   }
+   selectionSort(head);
+   LLtraverse(head);
+    return 0;
+}
