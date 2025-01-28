@@ -29,17 +29,25 @@ void bubbleSort(Node* head) {
         end = curr;
     }
 }
-void LLtraverse(Node* head){
+void listTraverse(Node* head){
     Node* temp = head;
     
     while(temp!= NULL){
+        if(temp->data != NULL){
         printf("%d->", temp->data);
+    }else{
+        printf("%d", temp->data);
+    }
         temp = temp->next;
     }
-    printf("NULL\n");
+    printf("\n");
 }
-void LLAddNode(int value) {
+void addNode(int value) {
     Node* newNode = (Node*)malloc(sizeof(Node));
+    if(newNode == NULL){
+    printf("Memory Allocation Failed!);
+    return;
+    }
     newNode->data = value;
     newNode->next = NULL;
 
@@ -59,9 +67,9 @@ int main(){
         scanf("%d", &n);
         for (int i = 0; i < n; i++) {
         scanf("%d", &value);
-        LLAddNode(value);
+        addNode(value);
     }
     bubbleSort(head);
-    LLtraverse(head);
+    listTraverse(head);
     return 0;
 }
