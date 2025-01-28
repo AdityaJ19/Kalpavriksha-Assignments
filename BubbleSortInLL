@@ -8,17 +8,17 @@ typedef struct Node{
 
 Node* head = NULL;
 
-void bubbleSort(Node* head) {
-    if (!head || !head->next)
+void bubbleSort(Node* head){
+    if(!head || !head->next)
         return;
 
     Node* end = NULL;
 
-    while (end != head) {
+    while(end != head){
         Node* curr = head;
         Node* front = head->next;
-        while (front != end) {
-            if (curr->data > front->data) {
+        while(front != end){
+            if(curr->data > front->data){
                 int temp = curr->data;
                 curr->data = front->data;
                 front->data = temp;
@@ -29,47 +29,63 @@ void bubbleSort(Node* head) {
         end = curr;
     }
 }
+
 void listTraverse(Node* head){
     Node* temp = head;
-    
-    while(temp!= NULL){
-        if(temp->data != NULL){
-        printf("%d->", temp->data);
-    }else{
-        printf("%d", temp->data);
-    }
+
+    while(temp != NULL){
+        if(temp->next != NULL){
+            printf("%d->", temp->data);
+        }else{
+            printf("%d", temp->data);
+        }
         temp = temp->next;
     }
     printf("\n");
 }
-void addNode(int value) {
+
+void addNode(int value){
     Node* newNode = (Node*)malloc(sizeof(Node));
     if(newNode == NULL){
-    printf("Memory Allocation Failed!);
-    return;
+        printf("Memory Allocation Failed!\n");
+        return;
     }
     newNode->data = value;
     newNode->next = NULL;
 
-    if (head == NULL) {
+    if (head == NULL){
         head = newNode;
         return;
     }
+
     Node* temp = head;
-    while (temp->next != NULL) {
+    while(temp->next != NULL){
         temp = temp->next;
     }
     temp->next = newNode;
 }
 
+void freeList(Node* head){
+    Node* temp;
+    while(head != NULL){
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
 int main(){
     int n, value;
-        scanf("%d", &n);
-        for (int i = 0; i < n; i++) {
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++){
         scanf("%d", &value);
         addNode(value);
     }
     bubbleSort(head);
     listTraverse(head);
+
+    freeList(head);
+
     return 0;
 }
