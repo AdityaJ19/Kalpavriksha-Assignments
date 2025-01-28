@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}Node;
+
+Node* head = NULL;
+void traverseLL(Node* head){
+    if(head == NULL || head->next == NULL){
+        return;
+    }
+    Node* temp = head;
+    while(temp != NULL){
+        printf("%d->",temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+void addNode(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+    } else {
+        Node* temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+}
+
+void freeList(Node* head){
+    Node* temp;
+    while (head != NULL){
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+void linearSearch(Node* head, int target){
+    if(head == NULL){
+        printf("List is empty");
+        return;
+    }
+    Node* temp = head;
+    int position = 1;
+    while(temp != NULL){
+        if(temp->data == target){
+            printf("Found element %d at position %d.\n", target,position);
+            return;
+        }
+        temp = temp->next;
+        position++;
+    }
+    printf("The element not found in list");
+}
+
+int main()
+{
+    int n, value;
+    scanf("%d", &n);
+    
+    for(int i = 0; i<n; i++){
+        scanf("%d", &value);
+        addNode(value);
+    }
+    int target;
+    scanf("%d", &target);
+    linearSearch(head, target);
+    traverseLL(head);
+    freeList(head);
+
+    return 0;
+}
