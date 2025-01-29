@@ -1,0 +1,136 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* head = NULL;
+
+int isEmpty(Node* head){
+    return head == NULL;
+}
+
+Node* push(int value){
+    Node* temp = (Node*)malloc(sizeof(Node));
+    temp->data = value;
+    temp->next = head;
+    head = temp;
+    return head;
+}
+
+int pop(Node** head){
+    if (isEmpty(*head)){
+        return -1;
+    } else {
+        Node* temp = *head;
+        *head = (*head)->next;
+        int value = temp->data;
+        free(temp);
+        return value;
+    }
+}
+
+int peek(Node* head){
+    if (isEmpty(head)){
+        return -1;
+    }
+    return head->data;
+}
+
+int size(Node* head){
+    int count = 0;
+    Node* temp = head;
+    while (temp != NULL){
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}
+
+void display(Node* head){
+    if (head == NULL) {
+        printf("Stack is Empty\n");
+        return;
+    }
+    Node* temp = head;
+    while (temp != NULL){
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    int choice, value;
+    char input[100];
+
+    while (1) {
+        printf("\nStack Operations Menu:\n");
+        printf("1. Push to the stack\n");
+        printf("2. Pop from the stack\n");
+        printf("3. Peek into the stack\n");
+        printf("4. Check if the stack is empty\n");
+        printf("5. Get the size of the stack\n");
+        printf("6. Display the stack\n");
+        printf("7. Exit\n");
+        printf("Enter your choice (1-7): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to push: ");
+                scanf("%s", input);
+
+                if (sscanf(input, "%d", &value) != 1){
+                    printf("Invalid input.\n");
+                }else{
+                    push(value);
+                }
+                break;
+
+            case 2:
+                value = pop(&head);
+                if (value != -1) {
+                    printf("Popped value: %d\n", value);
+                } else {
+                    printf("Stack is empty. Cannot pop.\n");
+                }
+                break;
+
+            case 3:
+                value = peek(head);
+                if (value != -1){
+                    printf("Top element: %d\n", value);
+                } else {
+                    printf("Stack is empty. Nothing to peek.\n");
+                }
+                break;
+
+            case 4:
+                if (isEmpty(head)){
+                    printf("The stack is empty.\n");
+                } else {
+                    printf("The stack is not empty.\n");
+                }
+                break;
+
+            case 5:
+                printf("Size of the stack is: %d\n", size(head));
+                break;
+
+            case 6:
+                display(head);
+                break;
+
+            case 7:
+                printf("Exiting...\n");
+                return 0;
+
+            default:
+                printf("Invalid choice. Please enter a valid choice.\n");
+        }
+    }
+    return 0;
+}
