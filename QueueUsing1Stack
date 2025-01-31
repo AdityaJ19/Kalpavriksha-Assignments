@@ -11,6 +11,10 @@ void push(Stack* stack, int value){
     stack->arr[++stack->topElement] = value;
 }
 
+int isEmpty(Stack* stack){
+    return stack->topElement == -1;
+}
+
 int pop(Stack* stack){
     if(isEmpty(stack)){
         printf("Stack is empty\n");
@@ -38,10 +42,6 @@ int dequeue(Stack* stack){
     }else{
         return stack->arr[stack->topElement--];
     }
-}
-
-int isEmpty(Stack* stack){
-    return stack->topElement == -1;
 }
 
 int peek(Stack* stack){
