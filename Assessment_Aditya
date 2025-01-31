@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Patient{
+    char *patientId[10];
+    char *severeity[10];
+    struct Patient* next;
+}Patient;
+
+Patient* createPatient(char* patientId, char* severeity){
+    Patient* newPatient = (Patient*)malloc(sizeof(Patient));
+    strcpy(newPatient->patientId, patientId);
+    strcpy(newPatient->severeity, severeity);
+    newPatient->next = NULL;
+    return newPatient;
+}
+
+void addPatient(Patient** head, char* patientId, char* severeity){
+    Patient* newPatient = createPatient(patientId, severeity);
+ 
+    if (head == NULL) {
+        head = newPatient;
+    } else {
+        Patient *temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newPatient;
+    }
+}
+
+void freeList(Patient* head){
+    Patient* temp;
+    while(temp!= NULL){
+        temp = head;
+        temp->next = head;
+        free(temp);
+    }
+}
+
+int* condition(char* severeity){
+    if(strcmp(severeity, "Critical")){
+        return 0;
+    }else if(strcmp(severeity, "Serious")){
+        return 1;
+    }else if(strcmp(severeity, "Stable")){
+        return 2;
+    }else{
+        return 3;
+    }
+}
+
+Patient* insertionSort(Patient* head) {
+    if (head == NULL || head->next == NULL)
+        return head;
+
+    Patient* sorted = NULL;
+    Patient* curr = head;
+    
+    while (curr != NULL) {
+        Patient* next = curr->next;
+
+        if (sorted == NULL || curr->next >= curr->patientId) {
+            curr->next = sorted;
+            sorted = curr;
+        } else {
+            Patient* temp = sorted;
+            while (temp->next != NULL && temp->next->patientId < curr->patientId) {
+                temp = temp->next;
+            }
+            curr->next = temp->next;
+            temp->next = curr;
+        }
+        curr = next;
+    }
+    return sorted;
+}
+
+void printPatient(Patient* head){
+    Patient* temp = head;
+    while(temp!= NULL){
+        printf("%s %s", temp->patientId, temp->severeity);
+    }
+    temp = temp->next;
+}
+int main(){
+    int n;
+    scanf("%d", &n);
+    Patient* head = NULL;
+
+    for(int i = 0; i< n; i++){
+        char* patientId[10];
+        char* severeity[10];
+        scanf("%s %s", patientId, severeity);
+        addPatient(&head,patientId,severeity);
+    }
+    printPatient(&head);
+    return 0;
+}
