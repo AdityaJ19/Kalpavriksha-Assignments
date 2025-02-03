@@ -1,0 +1,137 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Queue{
+    int size;
+    int frontIndex;
+    int rearIndex;
+    int capacity;
+    int* arr;
+}Queue;
+
+int isEmpty(Queue* queue){
+    return queue->size == 0;
+}
+
+int isFull(Queue* queue){
+    return queue->size == queue->capacity;
+}
+
+int deQueue(Queue* queue){
+    int index = -1;
+    if(isEmpty(queue)){
+        printf("Queue is Empty\n");
+    }else{
+        index = queue->arr[queue->frontIndex];
+        queue->frontIndex++;
+        queue->size--;
+        printf("Element %d removed from queue.\n", index);
+        if (queue->size == 0) {
+            queue->frontIndex = 0;
+            queue->rearIndex = -1;
+        }
+    }
+    return index;
+}
+
+void enQueue(Queue* queue, int value){
+    if(isFull(queue)){
+        printf("Queue is Full\n");
+    }else{
+        if(queue->size == 0){
+            queue->frontIndex = 0;
+        }
+        queue->rearIndex++;
+        queue->arr[queue->rearIndex] = value;
+        queue->size++;
+        printf("Element %d inserted into the queue.\n", value);
+    }
+}
+
+int peek(Queue* queue){
+    if(isEmpty(queue)){
+        return -1;
+    }else{
+        return queue->arr[queue->frontIndex];
+    }
+}
+
+int size(Queue* queue){
+        return queue->size;
+}
+
+int main(){
+    Queue queue;
+    queue.capacity = 100;
+    queue.frontIndex = 0;
+    queue.rearIndex = -1;
+    queue.size = 0;
+    queue.arr = (int*)malloc(queue.capacity * sizeof(int));
+
+    if(queue.arr == NULL){
+        printf("Memory allocation failed");
+        return 1;
+    }
+
+    int choice,value;
+    char input[100];
+
+    while(1){
+        printf("\nQueue Operations Menu\n");
+        printf("1. Enqueue into the queue\n");
+        printf("2. Dequeue into the queue\n");
+        printf("3. Peek into the Queue\n");
+        printf("4. Check if Queue is Empty\n");
+        printf("5. Get the size of Queue\n");
+        printf("6. Exit\n");
+        printf("Enter your Choice(1-6): ");
+        scanf("%d", &choice);
+
+        switch(choice){
+            case 1:
+                printf("Enter value to Enqueue: ");
+                scanf("%s", input);
+
+                if(sscanf(input, "%d", &value) != 1){
+                    printf("Invalid input.\n");
+                }else{
+                    enQueue(&queue, value);
+                }
+                break;
+
+            case 2:
+                value = Q(&queue);
+                if(value != -1){
+                    printf("Dequeued value: %d\n", value);
+                }
+                break;
+
+            case 3:
+                value = peek(&queue);
+                if(value != -1){
+                    printf("Front element: %d\n", value);
+                }
+                break;
+
+            case 4:
+                if(isEmpty(&queue)){
+                    printf("The Queue is empty.\n");
+                }else{
+                    printf("The Queue is not empty.\n");
+                }
+                break;
+
+            case 5:
+                printf("Size of the Queue is: %d\n", size(&queue));
+                break;
+
+            case 6:
+                printf("Exiting...\n");
+                free(queue.arr);
+                return 0;
+
+            default:
+                printf("Invalid Choice. Please enter a valid input.\n");
+        }
+    }
+}
