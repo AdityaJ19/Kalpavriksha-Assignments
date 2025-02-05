@@ -1,13 +1,13 @@
 #include<stdio.h>
 #include<stdlib.h>
-typedef struct node {
+typedef struct node{
     int data;
     struct node * next;
-} node;
+}node;
  
 node *head = NULL;
  
-void insertAtBeginning(int value) {
+void insertAtBeginning(int value){
     node *newNode = NULL;
     newNode = malloc(sizeof(node));
     newNode->data = value;
@@ -15,8 +15,8 @@ void insertAtBeginning(int value) {
     head = newNode;
 }
  
-void insertAtEnd(int value) {
-    if(head == NULL) {
+void insertAtEnd(int value){
+    if(head == NULL){
         insertAtBeginning(value);
         return;
     }
@@ -24,26 +24,24 @@ void insertAtEnd(int value) {
     newNode = malloc(sizeof(node));
     newNode->data = value;
     node *temp = head;
-    while(temp->next != NULL) {
+    while(temp->next != NULL){
         temp = temp->next;
     }
     temp->next= newNode;
     newNode->next = NULL;
- 
 }
  
- 
-void insertAtPosition(int position, int value) {
+void insertAtPosition(int position, int value){
     if(position<=0){
         printf("Enter a valid value for the position\n");
         return;
     }
-    if(head == NULL) {
+    if(head == NULL){
         printf("Your list is empty");
         return;
     }
     int pos = position;
-    if(pos ==1) {
+    if(pos ==1){
         insertAtBeginning(value);
         return;
     }
@@ -52,10 +50,10 @@ void insertAtPosition(int position, int value) {
     newNode->data = value;
     node *temp = head;
  
-    for(int i=2; i<pos&&temp!=NULL; i++) {
+    for(int i=2; i<pos&&temp!=NULL; i++){
         temp = temp->next;
     }
-    if(temp == NULL) {
+    if(temp == NULL){
         printf("Enter a valid position to put value\n");
         return;
     }
@@ -63,107 +61,102 @@ void insertAtPosition(int position, int value) {
     temp->next = newNode;
 }
  
- 
-void updateAtPosition(int position, int value) {
+void updateAtPosition(int position, int value){
     if(position<=0){
         printf("Enter a valid value for the position\n");
         return;
     }
-    if(head == NULL) {
+    if(head == NULL){
         printf("Your list is empty\n");
         return;
     }
     node *temp = head;
-    for(int i=1; i<position&&temp!=NULL; i++) {
+    for(int i=1; i<position&&temp!=NULL; i++){
         temp = temp->next;
     }
-    if(temp == NULL) {
+    if(temp == NULL){
         printf("Enter a valid position\n");
         return;
     }
     temp->data = value;
- 
 }
  
-void deleteFromBeginning() {
-    if(head == NULL) {
+void deleteFromBeginning(){
+    if(head == NULL){
         printf("Nothing to delete from the list\n");
         return;
     }
     head = head->next;
 }
  
-void deleteAtEnd() {
-    if(head == NULL) {
+void deleteAtEnd(){
+    if(head == NULL){
         printf("Nothing to delete from the list\n");
         return;
     }
     node *temp = head;
  
-    while(temp->next->next != NULL) {
+    while(temp->next->next != NULL){
         temp = temp->next;
     }
     temp->next = NULL;
 }
  
-void deleteAtPosition(int position) {
+void deleteAtPosition(int position){
     if(position<=0){
         printf("Enter a valid value for the position\n");
         return;
     }
-    if(head == NULL) {
+    if(head == NULL){
         printf("Your list is already empty\n");
         return;
     }
-    if(position == 1) {
+    if(position == 1){
         deleteFromBeginning();
         return;
     }
     node *temp = head;
-    for(int i=2; i<position&&temp->next!=NULL; i++) {
+    for(int i=2; i<position&&temp->next!=NULL; i++){
         temp=temp->next;
     }
-    if(temp != NULL || temp -> next != NULL || temp->next->next != NULL) {
+    if(temp != NULL || temp -> next != NULL || temp->next->next != NULL){
         temp->next = temp->next->next;
         return;
     }
-    else {
+    else{
         printf("Enter a valid position\n");
     }
  
 }
  
  
-void display(node * head) {
+void display(node * head){
  
-    if(head == NULL) {
+    if(head == NULL){
         printf("List is empty Nothing to print\n");
         return;
     }
     node * temp = head;
- 
- 
- 
-    while(temp != NULL) {
+    while(temp != NULL){
         printf("%d ",temp->data);
         temp = temp->next;
     }
     printf("\n");
 }
  
-int main() {
+int main(){
     int operations;
     scanf("%d",&operations);
-    if(operations<=0 || operations >100) {
+    if(operations<=0 || operations >100){
         printf("Enter a valid count of Number of operations(1-100)");
         return 0;
     }
  
-    for(int i=0; i<operations; i++) {
+    for(int i=0; i<operations; i++){
         int choice ;
         scanf("%d",&choice);
  
-        switch(choice) {
+        switch(choice){
  
         case 1:
             int valAddToEnd;
