@@ -1,0 +1,157 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TABLE_SIZE 10
+
+typedef struct Node{
+    int key;
+    int data;
+    struct Node* next;
+}Node;
+
+typedef struct HashMap{
+    struct Node* table[TABLE_SIZE];
+}HashMap;
+
+Node* createNode(int key, int value){
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->key = key;
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+int hashing(int key){
+    return key % TABLE_SIZE;
+}
+
+void createHashMap(HashMap* map){
+    for(int i = 0; i < TABLE_SIZE; i++){
+        map->table[i] = NULL;
+    }
+}
+
+void insert(HashMap* map, int key, int value){
+    int index = hashing(key);
+    Node* curr = map->table[index];
+
+    while(curr != NULL){
+        if(curr->key == key){
+            curr->data = value;
+            return;
+        }
+        curr = curr->next;
+    }
+
+    Node* newNode = createNode(key, value);
+
+    if(map->table[index] == NULL){
+        map->table[index] = newNode;
+    }else{
+        curr = map->table[index];
+        while(curr->next != NULL){
+            curr = curr->next;
+        }
+        curr->next = newNode;
+    }
+}
+
+int search(HashMap* map, int key){
+    int index = hashing(key);
+    Node* curr = map->table[index];
+
+    while(curr != NULL){
+        if(curr->key == key){
+            return curr->data;
+        }
+        curr = curr->next;
+    }
+    return -1;
+}
+
+void delete(HashMap* map, int key){
+    int index = hashing(key);
+    Node* curr = map->table[index];
+    Node* prev = NULL;
+
+    while(curr != NULL && curr->key != key){
+        prev = curr;
+        curr = curr->next;
+    }
+    if(curr == NULL){
+        printf("Key %d not found in Hash Table.\n", key);
+        return;
+    }
+
+    if(prev == NULL){
+        map->table[index] = curr->next;
+    }else{
+        prev->next = curr->next;
+    }
+    free(curr);
+}
+
+void display(HashMap* map){
+    for(int i = 0; i < TABLE_SIZE; i++){
+        Node* curr = map->table[i];
+        if(curr != NULL){
+            printf("Index %d: ", i);
+            while(curr != NULL){
+                printf("(%d, %d) -> ", curr->key, curr->data);
+                curr = curr->next;
+            }
+            printf("NULL\n");
+        }
+    }
+}
+
+int main(){
+    HashMap map;
+    createHashMap(&map);
+    int choice, key, value;
+
+    while(1){
+        printf("\nHashMap Function Menu\n");
+        printf("1. Insert \n");
+        printf("2. Search\n");
+        printf("3. Delete\n");
+        printf("4. Display\n");
+        printf("5. Exit\n");
+        printf("Enter your Choice: ");
+        scanf("%d", &choice);
+
+        switch (choice){
+            case 1:
+                printf("Enter key: ");
+                scanf("%d", &key);
+                printf("Enter Value: ");
+                scanf("%d", &value);
+                insert(&map, key, value);
+                break;
+            case 2:
+                printf("Enter key: ");
+                scanf("%d", &key);
+                value = search(&map, key);
+                if (value == -1) {
+                    printf("Key %d not found.\n", key);
+                } else {
+                    printf("Value for key %d: %d\n", key, value);
+                }
+                break;
+            case 3:
+                printf("Enter the key to Delete: ");
+                scanf("%d", &key);
+                delete(&map, key);
+                break;
+            case 4:
+                display(&map);
+                break;
+            case 5:
+                printf("Exiting...\n");
+                return 0;
+            default:
+                printf("Enter a valid Choice (1-5)\n");
+        }
+    }
+    return 0;
+}
